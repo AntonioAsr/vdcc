@@ -1,0 +1,87 @@
+/**
+ 
+  Vodafone coding challenge
+ 
+  You have been tasked with creating a helper function that will be used to determine the output
+  of an array of data.
+
+  Each element of the array has the following structure:
+
+    {
+      state: <String> - a state to go to
+      errorCode: <String> - optional error code
+    }
+
+  The states have different functionalities:
+
+    'processing' = delay by 2 seconds, then fetch the next state
+    'error' = handle the error code provided (see below)
+    'success' = return from the helper with the object: { title: 'Order complete' message: null }
+
+  Handling error codes:
+
+    'NO_STOCK' = return from the helper with an object: { title: 'Error page', message: 'No stock has been found' }
+    'INCORRECT_DETAILS' = return from the helper with an object: { title: 'Error page', message: 'Incorrect details have been entered' }
+    null = return from the helper with an object: { title: 'Error page', message: null }
+    undefined = return from the helper with an object: { title: 'Error page', message: null }
+
+  Example usage:
+  -------
+  getProcessingPage([{ state: 'processing' }, { state: 'error' }])
+  => should return after 2 seconds with the object: { title: 'Error page', message: null }
+
+  Notes:
+  - Provide the code and a description of how to run it
+**/
+
+// Solution
+
+/**
+ * Gets the processing page
+ * @param {array} data 
+ */
+
+const ERROR_MESSAGES = {
+    N0_STOCK: "No stock has been found",
+    INCORRECT_DETAILS: "Incorrect details have been entered",
+    UNKNOWN_ERROR: "An unknown error happened"
+}
+
+function getProcessingPage(data) {
+    return new Promise((resolve, reject) => {
+        let response;
+        data.map((page) => {
+            if (page.state === "processing") {
+                setTimeout(() => {
+                    resolve(response);
+                }, 2000);
+            } else if (page.state === "error") {
+                if (page.errorCode === ERROR_MESSAGES.N0_STOCK) {
+                    response = {title: "Error page", message: ERROR_MESSAGES.N0_STOCK}
+                } else if (page.errorCode === ERROR_MESSAGES.INCORRECT_DETAILS) {
+                    response = {title: "Error page", message: ERROR_MESSAGES.INCORRECT_DETAILS}
+                } else {
+                    reject(ERROR_MESSAGES.UNKNOWN_ERROR)
+                }
+            }
+        })
+    });
+}
+
+// Example of use
+const data = [{state: "processing"}, {state: "error", errorCode: "No stock has been found"}];
+
+const pageStatus = getProcessingPage(data)
+    .then((result) => {
+        console.log("the result is: ", result)
+    })
+    .catch((error) => {
+        console.log("error is: ", error)
+});
+
+console.log(pageStatus)
+
+
+
+
+
